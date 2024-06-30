@@ -3,8 +3,8 @@
 // @namespace   https://github.com/wicket-quest/wicket-quest
 // @description Adds a export button to Stack Exchange questions and answers post menu. The post is exported to a local Obsidian vault and open it Obsidian so it could be privately edited and annotated.
 // @author      Wicket
-// @updateURL   
-// @downloadURL 
+// @updateURL   https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
+// @downloadURL https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
 // @version     2024-06-30_12:00_GMT-06
 // @match       *://*.stackexchange.com/questions/*
 // @match       *://*.stackoverflow.com/questions/*
