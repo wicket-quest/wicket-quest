@@ -98,7 +98,7 @@ function exportToObsidian(params) {
       const questionTags = Array.from(document.querySelector('div.question').querySelectorAll('.post-tag'));
       tags += questionTags.map(tag => tag.innerText).join(' ');
     }
-    const content = postType.cloneNode(true);
+    const content = postBody.cloneNode(true);
     /**
      * Convert inline question tag relative URLs to absolute URLs.
      */
