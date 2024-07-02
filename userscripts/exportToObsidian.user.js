@@ -98,11 +98,16 @@ function exportToObsidian(params) {
       const questionTags = Array.from(document.querySelector('div.question').querySelectorAll('.post-tag'));
       tags += questionTags.map(tag => tag.innerText).join(' ');
     }
+    const content = postType.cloneNode(true);
+    /**
+     * Convert inline question tag relative URLs to absolute URLs.
+     */
+    const questionTags = content.querySelectorAll('.post-tag');
+    // href returns the absolute URL despite the href attribute having a relative URL.
+    questionTags.forEach(tag => { tag.href = tag.href });
 
     const {
-        title,
-        byline,
-        content
+        title
     } = new Readability(document.cloneNode(true)).parse();
 
     var vaultName ;
@@ -150,13 +155,12 @@ function exportToObsidian(params) {
     const fileContent =
         '---\n'
         + 'title: "' + title + '"\n'
-        + 'category: "[[' + postType + ']]"\n'
         + 'author: ' + authorBrackets + '\n'
-        + 'title: "' + title + '"\n'
-        + 'source: ' + document.URL + '\n'
-        + 'clipped: ' + today + '\n'
         + (created ? 'created: ' + created + '\n' : '')
+        + 'source: ' + document.URL + '\n'
+        + 'category: "[[' + postType + ']]"\n'
         + 'topics: \n'
+        + 'clipped: ' + today + '\n'
         + 'tags: [' + tags + ']\n'
         + '---\n\n'
         + markdownBody ;
