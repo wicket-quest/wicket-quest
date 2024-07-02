@@ -5,6 +5,10 @@
    - Google Apps Script and Google Editors (Docs, Forms, Sheets, Slides).
    - Personal Developement Plans on using Computers (including mobile devices, programming, etc.).
 
+[![Stack Overflow](https://img.shields.io/badge/Stack_Overflow-FE7A16?style=for-the-badge&logo=stack-overflow&logoColor=white)](https://stackoverflow.com/users/1595451/wicket)
+[![Whatsapp](https://img.shields.io/badge/WhatsApp-25D366?style=for-the-badge&logo=whatsapp&logoColor=white)](https://wa.me/528126648293)
+[![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.com/users/wicketthequerent)
+[![Contact me on Codementor](https://www.codementor.io/m-badges/rbn/contact-me.svg)](https://www.codementor.io/@rbn?refer=badge)
 ## Now
 Now I'm exploring:
 - Using this ✨ _special_ ✨ GitHub's repository. It's special because GitHub shows README.md, this file, on my GitHub profile.
