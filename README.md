@@ -7,7 +7,7 @@
 
 ## Now
 
-- Now I'm exploring using this ✨ _special_ ✨ GitHub's repository. It's special because GitHub README.md, this file, on my GiHub profile.
+- Now I'm exploring using this ✨ _special_ ✨ GitHub's repository. It's special because GitHub shows README.md, this file, on my GiHub profile.
 - Also I'm exploring the use of [Obsidian](https://obsidia.md), a note taking app that is highly customizable and that has a thriving community of open source pluging creators to share markdown notes using this repository. You can find this notes in the notes folder. The starting page is [Welcome.md](notes/Welcome.md).
 <!--
 **wicket-quest/wicket-quest** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
