@@ -19,8 +19,8 @@ The linked notes might not be shared publicly.
 
 | Category                  | Count |
 | ------------------------- | ----- |
-| [[Answer.md\|Answer]]     | 1     |
-| [[Question.md\|Question]] | 2     |
+| [[Answer\|Answer]]     | 1     |
+| [[Question\|Question]] | 2     |
 
 
 ## Note Sharing
