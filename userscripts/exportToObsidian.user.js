@@ -5,7 +5,7 @@
 // @author      Wicket
 // @updateURL   https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
 // @downloadURL https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
-// @version     2024-07-02_17:26_GMT-06
+// @version     2024-07-02_17:29_GMT-06
 // @match       *://*.stackexchange.com/questions/*
 // @match       *://*.stackoverflow.com/questions/*
 // @match       *://*.superuser.com/questions/*
