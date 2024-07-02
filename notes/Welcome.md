@@ -19,16 +19,16 @@ The linked notes might not be shared publicly.
 
 | Category                  | Count |
 | ------------------------- | ----- |
-| [[./Answer\|Answer]]     | 1     |
-| [[./Question\|Question]] | 2     |
+| [Answer](./Answer.md)     | 1     |
+| [Question](./Question.md) | 2     |
 
 
 ## Note Sharing
 
 I'm exploring was to share notes among other things. 
 
-I'm will be exploring using [[Enveloppe|Enveloppe]], an Obsidian Community Plugin that publish markdown notes to a GitHub repository.
+I'm will be exploring using [Enveloppe](Enveloppe.md), an Obsidian Community Plugin that publish markdown notes to a GitHub repository.
 ## Shared Notes
 Below there is an automatically generated list using Dataview, a Obsidian Community Plugin.
-As July 2, 2024 morning there was no shared notes. I mentioning this because this is the first note I will share using [[Enveloppe|Enveloppe]].
+As July 2, 2024 morning there was no shared notes. I mentioning this because this is the first note I will share using [Enveloppe](Enveloppe.md).
 
