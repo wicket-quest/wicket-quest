@@ -9,5 +9,5 @@ aliases:
 
 | Title                                                                                           |
 | ----------------------------------------------------------------------------------------------- |
-| [[16425844\|Chrome Developer Tools: What is Snippets Support?]] |
+| [Chrome Developer Tools: What is Snippets Support?](../16425844.md) |
 
