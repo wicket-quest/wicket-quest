@@ -32,12 +32,13 @@
  * Returns the site name from the site domain.
  * @returns {string} site (short) name
  */
-function getSiteName(){
-  let parts = location.host.split('.');
-  let site = parts <= 3
-  ? parts[0]
-  : location.host.slice(0,location.host.indexOf('.',5));
-  return site;
+function getSiteName() {
+    'use strict';
+    const parts = location.host.split('.');
+    const site = parts <= 3
+        ? parts[0]
+        : location.host.slice(0, location.host.indexOf('.', 5));
+    return site;
 }
 
 /**
@@ -45,12 +46,12 @@ function getSiteName(){
  * @param {Date} date
  */
 function convertDate(date) {
-  var yyyy = date.getFullYear().toString();
-  var mm = (date.getMonth()+1).toString();
-  var dd = date.getDate().toString();
-  var mmChars = mm.split('');
-  var ddChars = dd.split('');
-  return yyyy + '-' + (mmChars[1]?mm:"0"+mmChars[0]) + '-' + (ddChars[1]?dd:"0"+ddChars[0]);
+    var yyyy = date.getFullYear().toString();
+    var mm = (date.getMonth() + 1).toString();
+    var dd = date.getDate().toString();
+    var mmChars = mm.split('');
+    var ddChars = dd.split('');
+    return yyyy + '-' + (mmChars[1] ? mm : "0" + mmChars[0]) + '-' + (ddChars[1] ? dd : "0" + ddChars[0]);
 }
 
 /**
@@ -58,18 +59,18 @@ function convertDate(date) {
  * @param {Date} date
  * @returns {string} Date as yyyy-MM-dd HH:mm
  */
-function formatter(date){
-  const year = date.getFullYear();
-  let month = date.getMonth() + 1; // Months are 0-based in JavaScript
-  let day = date.getDate();
+function formatter(date) {
+    const year = date.getFullYear();
+    let month = date.getMonth() + 1; // Months are 0-based in JavaScript
+    let day = date.getDate();
 
-  // Pad month and day with leading zeros if necessary
-  month = month < 10 ? '0' + month : month;
-  day = day < 10 ? '0' + day : day;
+    // Pad month and day with leading zeros if necessary
+    month = month < 10 ? '0' + month : month;
+    day = day < 10 ? '0' + day : day;
 
-  let time = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
+    let time = date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", hour12: false });
 
-  return year + '-' + month + '-' + day + ', ' + time;
+    return year + '-' + month + '-' + day + ', ' + time;
 }
 
 /**
@@ -77,100 +78,109 @@ function formatter(date){
  * @param {[button: string, post: string, postBody: string, postId: string, postType: string]} params
  */
 function exportToObsidian(params) {
-  const [button, post, postBody, postId, postType] = params;
-  Promise.all([import('https://unpkg.com/turndown@6.0.0?module'), import('https://unpkg.com/@tehshrike/readability@0.2.0'), ]).then(async ([{
-      default: Turndown
-  }, {
-      default: Readability
-  }]) => {
+    const [post, postBody, postId, postType] = params;
+    Promise.all([import('https://unpkg.com/turndown@6.0.0?module'), import('https://unpkg.com/@tehshrike/readability@0.2.0'),]).then(async ([{
+        default: Turndown
+    }, {
+        default: Readability
+    }]) => {
 
-    /* Optional vault name */
-    const vault = "";
+        /* Optional vault name */
+        const vault = "";
 
-    /* Optional folder name such as "Clippings/" */
-    const folder = "Stack Exchange/" + getSiteName() + "/";
+        const siteName = getSiteName();
 
-    /* Optional tags  */
-    let tags = "";
+        /* Optional folder name such as "Clippings/" */
+        const folder = "Stack Exchange/" + siteName + "/";
 
-    /* Parse the question tags */
-    if(postType === "Question"){
-      const questionTags = Array.from(document.querySelector('div.question').querySelectorAll('.post-tag'));
-      tags += questionTags.map(tag => tag.innerText).join(' ');
-    }
-    const content = postBody.cloneNode(true);
-    /**
-     * Convert inline question tag relative URLs to absolute URLs.
-     */
-    const questionTags = content.querySelectorAll('.post-tag');
-    // href returns the absolute URL despite the href attribute having a relative URL.
-    questionTags.forEach(tag => { tag.href = tag.href });
-
-    const {
-        title
-    } = new Readability(document.cloneNode(true)).parse();
-
-    var vaultName ;
-    if (vault) {
-        vaultName = '&vault=' + encodeURIComponent(`${vault}`);
-    } else {
-        vaultName = '';
-    }
-
-    const markdownBody = new Turndown({
-        headingStyle: 'atx',
-        hr: '---',
-        bulletListMarker: '-',
-        codeBlockStyle: 'fenced',
-        emDelimiter: '*',
-    }).turndown(postBody);
-
-    var date = new Date();
-
-    const today = convertDate(date);
-
-    // Fetch post author
-    var author = post.querySelector('.user-details[itemprop=author]');
-    var anchor = author.querySelector('a');
-    // Check if there's an author and add brackets.
-    var authorBrackets = ( author
-    ? anchor
-      ? `"[[${folder + /users\/\d+/.exec(anchor.href)}|${anchor.innerText}]]"`
-      : `"[[${author.innerText}]]"`
-    : "" );
+        /* Optional tags  */
+        let tags = "";
 
 
-    /* Try to get post creation timestamp */
-    const createdElement = post.querySelector('.user-action-time');
-    const createdTimestamp = createdElement ? createdElement.querySelector('span').getAttribute('title') : "";
-    let created;
-    if(createdTimestamp && createdTimestamp.trim() !== ""){
-      date = new Date(createdTimestamp);
-      created = formatter(date);
-    } else {
-      created = '';
-    }
+        if (postType === "Question") {
+            /* Parse the question tags */
+            const questionTags = Array.from(document.querySelector('div.question').querySelectorAll('.post-tag'));
+            /* Add the site name as prefix, but put meta at the end */
+            const tagPrefix = /^meta\./.test(siteName) ? siteName.replace(/^meta\./, "") + "_meta" : siteName;
+            tags += questionTags.map(tag => `${tagPrefix}/${tag.innerText}`).join(' ');
+        }
 
-    /* YAML front matter as tags render cleaner with special chars  */
-    const fileContent =
-        '---\n'
-        + 'title: "' + title + '"\n'
-        + 'author: ' + authorBrackets + '\n'
-        + (created ? 'created: ' + created + '\n' : '')
-        + 'source: ' + document.URL + '\n'
-        + 'category: "[[' + postType + ']]"\n'
-        + 'topics: \n'
-        + 'clipped: ' + today + '\n'
-        + 'tags: [' + tags + ']\n'
-        + '---\n\n'
-        + markdownBody ;
+        const content = postBody.cloneNode(true);
 
-     document.location.href = "obsidian://new?"
-      + "file=" + encodeURIComponent(folder + postId)
-      + "&content=" + encodeURIComponent(fileContent)
-      + vaultName ;
+        /**
+         * Convert inline question tag relative URLs to absolute URLs.
+         */
+        const inlineQuestionTags = content.querySelectorAll('.post-tag');
+        // href returns the absolute URL despite the href attribute having a relative URL.
+        
+        inlineQuestionTags.forEach(tag => {tag.href = tag.href}); // eslint-disable-line
+        
 
-  })
+        const {
+            title
+        } = new Readability(document.cloneNode(true)).parse();
+
+        var vaultName;
+        if (vault) {
+            vaultName = '&vault=' + encodeURIComponent(`${vault}`);
+        } else {
+            vaultName = '';
+        }
+
+        const markdownBody = new Turndown({
+            headingStyle: 'atx',
+            hr: '---',
+            bulletListMarker: '-',
+            codeBlockStyle: 'fenced',
+            emDelimiter: '*',
+        }).turndown(postBody);
+
+        var date = new Date();
+
+        const today = convertDate(date);
+
+        // Fetch post author
+        var author = post.querySelector('.user-details[itemprop=author]');
+        var anchor = author.querySelector('a');
+        // Check if there's an author and add brackets.
+        var authorBrackets = (author
+            ? anchor
+                ? `"[[${folder + /users\/\d+/.exec(anchor.href)}|${anchor.innerText}]]"`
+                : `"[[${author.innerText}]]"`
+            : "");
+
+
+        /* Try to get post creation timestamp */
+        const createdElement = post.querySelector('.user-action-time');
+        const createdTimestamp = createdElement ? createdElement.querySelector('span').getAttribute('title') : "";
+        let created;
+        if (createdTimestamp && createdTimestamp.trim() !== "") {
+            date = new Date(createdTimestamp);
+            created = formatter(date);
+        } else {
+            created = '';
+        }
+
+        /* YAML front matter as tags render cleaner with special chars  */
+        const fileContent =
+            '---\n'
+            + 'title: "' + title + '"\n'
+            + 'author: ' + authorBrackets + '\n'
+            + (created ? 'created: ' + created + '\n' : '')
+            + 'source: ' + document.URL + '\n'
+            + 'category: "[[' + postType + ']]"\n'
+            + 'topics: \n'
+            + 'clipped: ' + today + '\n'
+            + 'tags: [' + tags + ']\n'
+            + '---\n\n'
+            + markdownBody;
+
+        document.location.href = "obsidian://new?"
+            + "file=" + encodeURIComponent(folder + postId)
+            + "&content=" + encodeURIComponent(fileContent)
+            + vaultName;
+
+    })
 }
 
 /**
@@ -178,32 +188,32 @@ function exportToObsidian(params) {
  * @param {PointerEvent} event
  */
 function startExporting(event) {
-  event.preventDefault();
-  const button = event.target
-  if (!confirm('Are you sure you want to export this post?')) return;
+    event.preventDefault();
+    const button = event.target
+    if (!confirm('Are you sure you want to export this post?')) return;
 
-  // Disable further clicks - the button becomes a progress indicator
-  button.removeEventListener('click', startExporting);
-  button.addEventListener('click', function(e) { e.preventDefault(); });
-  button.style.color = "#BBB";
-  button.removeAttribute("title");
-  button.innerText = "exporting ...";
-  let shareButton = button.closest('.js-post-menu');
-  const postId = shareButton.closest('[data-post-id]').dataset.postId;
-  let post = shareButton.closest("div.question");
-  let postType = '';
-  if (post == null) {
-    post = shareButton.closest("div.answer");
-    postType = "Answer"
-  } else {
-    postType = "Question"
-  }
-  const postBody = post.querySelector("div.js-post-body");
-  const params = [button, post, postBody, postId, postType];
-  exportToObsidian(params);
+    // Disable further clicks - the button becomes a progress indicator
+    button.removeEventListener('click', startExporting);
+    button.addEventListener('click', function (e) { e.preventDefault(); });
+    button.style.color = "#BBB";
+    button.removeAttribute("title");
+    button.innerText = "exporting ...";
+    let shareButton = button.closest('.js-post-menu');
+    const postId = shareButton.closest('[data-post-id]').dataset.postId;
+    let post = shareButton.closest("div.question");
+    let postType = '';
+    if (post == null) {
+        post = shareButton.closest("div.answer");
+        postType = "Answer"
+    } else {
+        postType = "Question"
+    }
+    const postBody = post.querySelector("div.js-post-body");
+    const params = [post, postBody, postId, postType];
+    exportToObsidian(params);
 
-  // Update archive button
-  button.innerText = "exporting tab opened";
+    // Update archive button
+    button.innerText = "exporting tab opened";
 }
 
 /**
@@ -211,41 +221,30 @@ function startExporting(event) {
  * Maschup of parts taked from Glorfidel's Archivist and Kepano's Web Clipper
  */
 (function () {
-  "use strict";
+    "use strict";
 
-  Array.from(document.querySelectorAll("a.js-share-link")).forEach((shareButton) => {
+    Array.from(document.querySelectorAll("a.js-share-link")).forEach((shareButton) => {
 
-    let post = shareButton.closest("div.question");
-    let postType = '';
-    if (post == null) {
-      post = shareButton.closest("div.answer");
-      postType = 'Answer';
-    } else {
-      postType = 'Question'
-    }
+        const disabled = false;
+        const hoverMessage = 'Export this post as a markdown file to a local Obsidian vault';
+        /** Create button */
+        const button = document.createElement('button');
+        button.classList.add("s-btn", "s-btn__link");
+        button.setAttribute('type', "button");
+        button.setAttribute('href', "#");
+        button.setAttribute('style', (disabled ? "color: #BBB" : ""));
+        button.setAttribute('title', hoverMessage);
+        button.innerText = 'Export';
+        /** Create cell with button */
+        const cell = document.createElement('div')
+        cell.classList.add('flex--item');
+        cell.append(button);
 
-    const postBody = post.querySelector("div.js-post-body");
+        /** Append cell to post menu */
+        const menu = shareButton.parentElement.parentElement;
+        menu.append(cell);
 
-    const disabled = false;
-    const hoverMessage = 'Export this post as a markdown file to a local Obsidian vault';
-    /** Create button */
-    const button = document.createElement('button');
-    button.classList.add("s-btn", "s-btn__link");
-    button.setAttribute('type',"button");
-    button.setAttribute('href',"#");
-    button.setAttribute('style', (disabled ? "color: #BBB" : ""));
-    button.setAttribute('title', hoverMessage);
-    button.innerText = 'Export';
-    /** Create cell with button */
-    const cell = document.createElement('div')
-    cell.classList.add('flex--item');
-    cell.append(button);
+        button.addEventListener('click', startExporting);
 
-    /** Append cell to post menu */
-    const menu = shareButton.parentElement.parentElement;
-    menu.append(cell);
-
-    button.addEventListener('click', startExporting);
-
-  });
+    });
 })();
