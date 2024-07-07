@@ -5,7 +5,7 @@
 // @author      Wicket
 // @updateURL   https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
 // @downloadURL https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
-// @version     2024-07-07_10:17_GMT-06
+// @version     2024-07-07_11:07_GMT-06
 // @match       *://*.stackexchange.com/questions/*
 // @match       *://*.stackoverflow.com/questions/*
 // @match       *://*.superuser.com/questions/*
@@ -168,7 +168,7 @@ function exportToObsidian(params) {
         /* YAML front matter as tags render cleaner with special chars  */
         const fileContent =
             '---\n'
-            + 'title: "' + title.replace(`"`,`\"`) + '"\n'
+            + 'title: "' + title.replace(/"/g,`\\"`) + '"\n'
             + 'author: ' + authorBrackets + '\n'
             + (created ? 'created: ' + created + '\n' : '')
             + 'source: ' + document.URL + '\n'
