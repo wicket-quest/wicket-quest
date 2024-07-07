@@ -5,7 +5,7 @@
 // @author      Wicket
 // @updateURL   https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
 // @downloadURL https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
-// @version     2024-07-05_19:24_GMT-06
+// @version     2024-07-07_09:54_GMT-06
 // @match       *://*.stackexchange.com/questions/*
 // @match       *://*.stackoverflow.com/questions/*
 // @match       *://*.superuser.com/questions/*
@@ -141,13 +141,17 @@ function exportToObsidian(params) {
 
         // Fetch post author
         var author = post.querySelector('.user-details[itemprop=author]');
-        var anchor = author.querySelector('a');
+        var anchor = author?.querySelector('a');
         // Check if there's an author and add brackets.
         var authorBrackets = (author
             ? anchor
                 ? `"[[${folder + /users\/\d+/.exec(anchor.href)}|${anchor.innerText}]]"`
                 : `"[[${author.innerText}]]"`
-            : "");
+            : post.querySelector('.user-details > .community-wiki')
+           
+            ? "[[Stack Exchange/Commons/Community Wiki|Community Wiki]]"
+            : ""
+        );
 
 
         /* Try to get post creation timestamp */
