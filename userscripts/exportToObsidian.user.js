@@ -5,7 +5,7 @@
 // @author      Wicket
 // @updateURL   https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
 // @downloadURL https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
-// @version     2024-07-07_11:07_GMT-06
+// @version     2024-07-08_18:36_GMT-06
 // @match       *://*.stackexchange.com/questions/*
 // @match       *://*.stackoverflow.com/questions/*
 // @match       *://*.superuser.com/questions/*
@@ -20,6 +20,8 @@
 // @exclude     *://*.askubuntu.com/questions/ask
 // @exclude     *://*.stackapps.com/questions/ask
 // @exclude     *://*.mathoverflow.net/questions/ask
+// @grant       GM_setValue
+// @grant       GM_getValue
 // ==/UserScript==
 
 /**
@@ -175,6 +177,7 @@ function exportToObsidian(params) {
             + 'category: "[[' + postType + ']]"\n'
             + 'topics: \n'
             + 'clipped: ' + today + '\n'
+            + (postType === "Answer" ? 'question: ' + post.dataset.parentid + '\n' : '')
             + 'tags: [' + tags + ']\n'
             + '---\n\n'
             + markdownBody;
@@ -217,7 +220,9 @@ function startExporting(event) {
     exportToObsidian(params);
 
     // Update archive button
-    button.innerText = "exporting tab opened";
+    const buttonText = "Clipped on Obsidian";
+    button.innerText = buttonText;
+    GM_setValue('ClipperButtonText', buttonText);
 }
 
 /**
@@ -228,17 +233,28 @@ function startExporting(event) {
     "use strict";
 
     Array.from(document.querySelectorAll("a.js-share-link")).forEach((shareButton) => {
-
-        const disabled = false;
-        const hoverMessage = 'Export this post as a markdown file to a local Obsidian vault';
+        
         /** Create button */
         const button = document.createElement('button');
         button.classList.add("s-btn", "s-btn__link");
         button.setAttribute('type', "button");
         button.setAttribute('href', "#");
+
+        /** Get the buttonText value */
+        const buttonText = GM_getValue('ClipperButtonText', 'Export');
+        
+        if(buttonText === 'Export'){                        
+            disabled = false;            
+            const hoverMessage = 'Export this post as a markdown file to a local Obsidian vault';
+            button.setAttribute('title', hoverMessage);            
+        } else {
+            button.addEventListener('click', function (e) { e.preventDefault(); });
+            disabled = true;                    
+        }
+
         button.setAttribute('style', (disabled ? "color: #BBB" : ""));
-        button.setAttribute('title', hoverMessage);
-        button.innerText = 'Export';
+        button.innerText = buttonText;
+        
         /** Create cell with button */
         const cell = document.createElement('div')
         cell.classList.add('flex--item');
