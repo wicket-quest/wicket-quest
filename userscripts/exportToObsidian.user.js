@@ -30,6 +30,14 @@
  * Some parts of this file were taken from obsidian-web-clipper.js -> https://gist.github.com/kepano/90c05f162c37cf730abb8ff027987ca3, later referred as Kepano's Web Clipper
  */
 
+/** Globals */
+const siteName = getSiteName();
+
+/* 
+ * Optional folder name such as "Clippings/" 
+ */
+const folder = "Stack Exchange/" + siteName + "/";
+
 /**
  * Returns the site name from the site domain.
  * @returns {string} site (short) name
@@ -77,10 +85,10 @@ function formatter(date) {
 
 /**
  * Adapted from Kepano's Web Clipper
- * @param {[button: string, post: string, postBody: string, postId: string, postType: string]} params
+ * @param {[post: string, postBody: string, postId: string, postType: string]} params
  */
 function exportToObsidian(params) {
-    const [post, postBody, postId, postType] = params;
+    const [post, postBody, postId, postType, folder, siteName] = params;
     Promise.all([import('https://unpkg.com/turndown@6.0.0?module'), import('https://unpkg.com/@tehshrike/readability@0.2.0'),]).then(async ([{
         default: Turndown
     }, {
@@ -89,11 +97,6 @@ function exportToObsidian(params) {
 
         /* Optional vault name */
         const vault = "";
-
-        const siteName = getSiteName();
-
-        /* Optional folder name such as "Clippings/" */
-        const folder = "Stack Exchange/" + siteName + "/";
 
         /* Optional tags  */
         let tags = "";
@@ -186,7 +189,12 @@ function exportToObsidian(params) {
             + "file=" + encodeURIComponent(folder + postId)
             + "&content=" + encodeURIComponent(fileContent)
             + vaultName;
-
+        
+        // Update archive button
+        const buttonText = "Clipped on Obsidian";
+        button.innerText = buttonText;
+        const key = (folder + postId).replace(/[ \/\.]./g,(m) => m[1].toUpperCase());
+        GM_setValue(key, buttonText);
     })
 }
 
@@ -216,13 +224,9 @@ function startExporting(event) {
         postType = "Question"
     }
     const postBody = post.querySelector("div.js-post-body");
-    const params = [post, postBody, postId, postType];
+    
+    const params = [post, postBody, postId, postType, folder, siteName];
     exportToObsidian(params);
-
-    // Update archive button
-    const buttonText = "Clipped on Obsidian";
-    button.innerText = buttonText;
-    GM_setValue('ClipperButtonText', buttonText);
 }
 
 /**
@@ -239,9 +243,6 @@ function startExporting(event) {
         button.classList.add("s-btn", "s-btn__link");
         button.setAttribute('type', "button");
         button.setAttribute('href', "#");
-
-        /** Get the buttonText value */
-        const buttonText = GM_getValue('ClipperButtonText', 'Export');
         
         let disabled = false;
         if(buttonText === 'Export'){                        
@@ -253,8 +254,7 @@ function startExporting(event) {
             disabled = true;                    
         }
 
-        button.setAttribute('style', (disabled ? "color: #BBB" : ""));
-        button.innerText = buttonText;
+        button.setAttribute('style', (disabled ? "color: #BBB" : ""));        
         
         /** Create cell with button */
         const cell = document.createElement('div')
@@ -265,6 +265,11 @@ function startExporting(event) {
         const menu = shareButton.parentElement.parentElement;
         menu.append(cell);
 
+        /** Get the buttonText value */
+        const postId = cell.closest('[data-post-id').dataset.postId;
+        const key = (folder + postId).replace(/[ \/\.]./g,(m) => m[1].toUpperCase());
+        const buttonText = GM_getValue(key, 'Export');
+        button.innerText = buttonText;
         button.addEventListener('click', startExporting);
 
     });
