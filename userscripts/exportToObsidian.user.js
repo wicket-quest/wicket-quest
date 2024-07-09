@@ -5,7 +5,7 @@
 // @author      Wicket
 // @updateURL   https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
 // @downloadURL https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
-// @version     2024-07-08_18:36_GMT-06
+// @version     2024-07-08_18:50_GMT-06
 // @match       *://*.stackexchange.com/questions/*
 // @match       *://*.stackoverflow.com/questions/*
 // @match       *://*.superuser.com/questions/*
@@ -177,7 +177,7 @@ function exportToObsidian(params) {
             + 'category: "[[' + postType + ']]"\n'
             + 'topics: \n'
             + 'clipped: ' + today + '\n'
-            + (postType === "Answer" ? 'question: ' + post.dataset.parentid + '\n' : '')
+            + (postType === "Answer" ? 'question: "[[' + folder + post.dataset.parentid + ']]"\n' : '')
             + 'tags: [' + tags + ']\n'
             + '---\n\n'
             + markdownBody;
@@ -243,8 +243,9 @@ function startExporting(event) {
         /** Get the buttonText value */
         const buttonText = GM_getValue('ClipperButtonText', 'Export');
         
+        let disabled = false;
         if(buttonText === 'Export'){                        
-            disabled = false;            
+            
             const hoverMessage = 'Export this post as a markdown file to a local Obsidian vault';
             button.setAttribute('title', hoverMessage);            
         } else {
