@@ -5,7 +5,7 @@
 // @author      Wicket
 // @updateURL   https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
 // @downloadURL https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
-// @version     2024-07-09_18:25_GMT-06
+// @version     2024-07-09_21:06_GMT-06
 // @match       *://*.stackexchange.com/questions/*
 // @match       *://*.stackoverflow.com/questions/*
 // @match       *://*.superuser.com/questions/*
@@ -107,7 +107,7 @@ function exportToObsidian(params) {
             const questionTags = Array.from(document.querySelector('div.question').querySelectorAll('.post-tag'));
             /* Add the site name as prefix, but put meta at the end */
             const tagPrefix = /^meta\./.test(siteName) ? siteName.replace(/^meta\./, "") + "_meta" : siteName;
-            tags += questionTags.map(tag => `${tagPrefix}/${tag.innerText}`).join(' ');
+            tags += questionTags.map(tag => `${tagPrefix}/${tag.innerText.replace(".","_")}`).join(' ');
         }
 
         const content = postBody.cloneNode(true);
