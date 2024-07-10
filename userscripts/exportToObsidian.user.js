@@ -191,9 +191,11 @@ function exportToObsidian(params) {
             + vaultName;
         
         // Update archive button
+        const menu = post.querySelector("a.js-share-link").parentElement.parentElement;
+        const button = menu.querySelector('button.qa-clipper');
         const buttonText = "Clipped on Obsidian";
         button.innerText = buttonText;
-        const key = (folder + postId).replace(/[ \/\.]./g,(m) => m[1].toUpperCase());
+        const key = (folder + postId).replace(/[ /.]./g,(m) => m[1].toUpperCase());
         GM_setValue(key, buttonText);
     })
 }
@@ -240,7 +242,7 @@ function startExporting(event) {
         
         /** Create button */
         const button = document.createElement('button');
-        button.classList.add("s-btn", "s-btn__link");
+        button.classList.add("qa-clipper", "s-btn", "s-btn__link");
         button.setAttribute('type', "button");
         button.setAttribute('href', "#");
         
@@ -267,7 +269,7 @@ function startExporting(event) {
 
         /** Get the buttonText value */
         const postId = cell.closest('[data-post-id').dataset.postId;
-        const key = (folder + postId).replace(/[ \/\.]./g,(m) => m[1].toUpperCase());
+        const key = (folder + postId).replace(/[ /.]./g,(m) => m[1].toUpperCase());
         const buttonText = GM_getValue(key, 'Export');
         button.innerText = buttonText;
         button.addEventListener('click', startExporting);
