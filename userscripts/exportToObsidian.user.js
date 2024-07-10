@@ -5,7 +5,7 @@
 // @author      Wicket
 // @updateURL   https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
 // @downloadURL https://github.com/wicket-quest/wicket-quest/raw/main/userscripts/exportToObsidian.user.js
-// @version     2024-07-08_18:50_GMT-06
+// @version     2024-07-09_18:25_GMT-06
 // @match       *://*.stackexchange.com/questions/*
 // @match       *://*.stackoverflow.com/questions/*
 // @match       *://*.superuser.com/questions/*
@@ -245,7 +245,12 @@ function startExporting(event) {
         button.classList.add("qa-clipper", "s-btn", "s-btn__link");
         button.setAttribute('type', "button");
         button.setAttribute('href', "#");
-        
+
+        /** Get the buttonText value */
+        const menu = shareButton.parentElement.parentElement;
+        const postId = menu.closest('[data-post-id').dataset.postId;
+        const key = (folder + postId).replace(/[ /.]./g,(m) => m[1].toUpperCase());
+        const buttonText = GM_getValue(key, 'Export');
         let disabled = false;
         if(buttonText === 'Export'){                        
             
@@ -264,13 +269,9 @@ function startExporting(event) {
         cell.append(button);
 
         /** Append cell to post menu */
-        const menu = shareButton.parentElement.parentElement;
+        
         menu.append(cell);
 
-        /** Get the buttonText value */
-        const postId = cell.closest('[data-post-id').dataset.postId;
-        const key = (folder + postId).replace(/[ /.]./g,(m) => m[1].toUpperCase());
-        const buttonText = GM_getValue(key, 'Export');
         button.innerText = buttonText;
         button.addEventListener('click', startExporting);
 
