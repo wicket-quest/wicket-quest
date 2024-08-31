@@ -1,0 +1,21 @@
+# Method help is sometimes is hidded behind the editor toolbar
+
+When creating a new Google Apps Script project, let's say by entering https://script.google.com/create in the Google Chrome address bar and pressing enter; a new project is designed with a default file and default function.
+
+Code.gs
+```
+function myFunction() {
+
+}
+```
+
+It's common to start typing on line 2. As you begin to enter a method, the method definition is automatically displayed.
+
+[![Method help in Google Apps Script editor][1]][1]
+
+The above image shows the method's definition below the line. However, it usually happens to me that it's displayed above the line, with most of the method help hidden below the editor's top panel, which shows the project title and the toolbar.
+
+I have tried disabling all the Chrome extensions and restarting Chrome, and I have even tried opening Chrome in incognito mode but nothing fix this.
+
+
+  [1]: https://i.sstatic.net/wnh3NcY8.png
